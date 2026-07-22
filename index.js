@@ -108,14 +108,28 @@ app.get('/', async (req, res) => {
 app.listen(3000, async () => {
     websiteContent = await scrapeWebsite()
     console.log('Example app listening on port 3000!');
+
+    setInterval(async () => {
+        websiteContent = await scrapeWebsite()
+        console.log('Website içeriği yenilendi.')
+    }, 24 * 60 * 60 * 1000)
 });
 
 app.post('/mesaj', async (req, res) => {
     const customer_message = req.body.message;
 
+    
+
     if (!customer_message) {
         return res.status(400).send('Lütfen bir mesaj giriniz');
     }
+
+    if(customer_message.length > 500) {
+        return res.status(400).send('Mesajınız çok uzun, lütfen 500 karakterden kısa yazın.')
+    }
+
+    const now = new Date().toLocaleString('tr-TR')
+    console.log(`[${now}] Gelen mesaj: ${customer_message}`)
 
     try {
 
@@ -144,5 +158,10 @@ app.post('/mesaj', async (req, res) => {
         res.status(500).send('Şu an bir sorun yaşıyoruz, lütfen tekrar deneyin.')
     }
 
+})
+
+app.post('/sifirla', (req,res) => {
+    conversationHistory = []
+    res.send('Konuşma geçmişi temizlendi.')
 })
 

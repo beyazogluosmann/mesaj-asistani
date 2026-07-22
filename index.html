@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Des İç Mimarlık Asistanı</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="chat-box">
+        <div class="header">
+            <div class="header-avatar">D</div>
+            <div class="header-info">
+                <h3>Des İç Mimarlık</h3>
+                <span class="status">&#x25CF; Çevrimiçi</span>
+            </div>
+        </div>
+        <div class="messages" id="messages">
+            <div class="message bot">
+                Merhaba! Ben Des İç Mimarlık'ın sanal asistanıyım. İç mimarlık, tasarım veya firmamız hakkında sormak istediğiniz bir şey var mı? 😊
+            </div>
+        </div>
+        <div class="typing" id="typing">Yazıyor<span>.</span><span>.</span><span>.</span></div>
+        <div class="input-area">
+            <input type="text" id="input" placeholder="Mesajınızı yazın..." />
+            <button id="send-btn" onclick="sendMessage()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

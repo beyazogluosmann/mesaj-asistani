@@ -90,7 +90,7 @@ app.get('/', async (req, res) => {
    try {
     
     const response = await ai.models.generateContent({
-        model : 'gemini-2.5-flash',
+        model : 'gemini-2.0-flash',
         contents: message,
         config: {
             systemInstruction: getSystemInstruction()
@@ -124,7 +124,7 @@ app.post('/mesaj', async (req, res)  => {
         });
 
         const response = await ai.models.generateContent({
-            model:'gemini-2.5-flash',
+            model:'gemini-2.0-flash',
             contents: conversationHistory,
             config: {
                 systemInstruction: getSystemInstruction()

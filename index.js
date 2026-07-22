@@ -99,7 +99,8 @@ app.get('/', async (req, res) => {
         res.send(response.choices[0].message.content)
 
     } catch (error) {
-        res.send(error.message)
+        console.error('Hata:', error.message)
+        res.status(500).send('Şu an bir sorun yaşıyoruz, lütfen tekrar deneyin.');
     }
 
 });
@@ -137,8 +138,10 @@ app.post('/mesaj', async (req, res) => {
             content: reply
         })
         res.send(reply)
+
     } catch (error) {
-        res.send(error.message)
+        console.error('Hata:', error.message)
+        res.status(500).send('Şu an bir sorun yaşıyoruz, lütfen tekrar deneyin.')
     }
 
 })

@@ -5,7 +5,7 @@ const cheerio = require('cheerio')
 const rate_limit = require('express-rate-limit')
 const app = express();
 
-const limiter = rate_limit({                                    
+const limiter = rate_limit({
     windowMs: 60 * 1000,
     max: 20,
     message: 'Çok fazla istek gönderdiniz, lütfen 1 dakika bekleyin.'
@@ -17,8 +17,8 @@ app.use(limiter)
 
 
 
-const {GoogleGenAI} = require('@google/genai');
-const ai = new GoogleGenAI({apiKey: process.env.GEMINI_API_KEY})
+const Groq = require('groq-sdk');
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
 
 async function scrapeWebsite() {
     try {
@@ -81,27 +81,27 @@ function getSystemInstruction() {
 }
 
 app.get('/', async (req, res) => {
-  const message = req.query.mesaj;
-  //console.log(message);
+    const message = req.query.mesaj;
+    //console.log(message);
 
-  if(!message) {
-     return res.status(400).send('Lütfen bir mesaj giriniz');
-  }
-   try {
-    
-    const response = await ai.models.generateContent({
-        model : 'gemini-1.5-flash',
-        contents: message,
-        config: {
-            systemInstruction: getSystemInstruction()
-        }
-    })
-    res.send(response.text)
-      
-   } catch (error) {
-     res.send(error.message) 
-   }
-    
+    if (!message) {
+        return res.status(400).send('Lütfen bir mesaj giriniz');
+    }
+    try {
+
+        const response = await groq.chat.completions.create({
+            model: 'llama-3.3-70b-versatile',
+            messages: [
+                { role: 'system', content: getSystemInstruction() },
+                { role: 'user', content: message }
+            ]
+        })
+        res.send(response.choices[0].message.content)
+
+    } catch (error) {
+        res.send(error.message)
+    }
+
 });
 
 app.listen(3000, async () => {
@@ -109,36 +109,37 @@ app.listen(3000, async () => {
     console.log('Example app listening on port 3000!');
 });
 
-app.post('/mesaj', async (req, res)  => {
+app.post('/mesaj', async (req, res) => {
     const customer_message = req.body.message;
-     
-    if(!customer_message){
-       return res.status(400).send('Lütfen bir mesaj giriniz');
+
+    if (!customer_message) {
+        return res.status(400).send('Lütfen bir mesaj giriniz');
     }
 
     try {
 
         conversationHistory.push({
             role: 'user',
-            parts: [{text: customer_message}]
+            content: customer_message
         });
 
-        const response = await ai.models.generateContent({
-            model:'gemini-1.5-flash',
-            contents: conversationHistory,
-            config: {
-                systemInstruction: getSystemInstruction()
-            }
+        const response = await groq.chat.completions.create({
+            model: 'llama-3.3-70b-versatile',
+            messages: [
+                { role: 'system', content: getSystemInstruction() },
+                ...conversationHistory
+            ]
+        })
 
-        })
+        const reply = response.choices[0].message.content
         conversationHistory.push({
-            role: 'model',
-            parts: [{text: response.text}]
+            role: 'assistant',
+            content: reply
         })
-        res.send(response.text)
+        res.send(reply)
     } catch (error) {
         res.send(error.message)
     }
-     
+
 })
 

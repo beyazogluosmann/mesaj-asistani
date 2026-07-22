@@ -26,7 +26,7 @@ async function scrapeWebsite() {
         const $ = cheerio.load(data)
         $('script, style, nav, footer, img').remove()
         const text = $('body').text().replace(/\s+/g, ' ').trim()
-        console.log('Website verisi çekildi.')
+        console.log('Website verisi çekildi. İlk 200 karakter:', text.substring(0, 200))
         return text
     } catch (error) {
         console.log('Scraping başarısız:', error.message)

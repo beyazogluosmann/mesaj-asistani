@@ -25,6 +25,7 @@ const limiter = rate_limit({
 });
 
 app.use(express.json())
+app.set('trust proxy', 1)
 app.use(express.static(__dirname))
 app.use(limiter)
 

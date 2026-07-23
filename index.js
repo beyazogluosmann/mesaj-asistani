@@ -4,6 +4,19 @@ const axios = require('axios')
 const cheerio = require('cheerio')
 const rate_limit = require('express-rate-limit')
 const app = express();
+const mongoose = require('mongoose')
+
+mongoose.connect(process.env.MONGODB_URI)
+    .then(() => console.log('MongoDB bağlandı'))
+    .catch(err => console.error('MongoDB hatası:', err.message))
+
+
+const Conversation = mongoose.model('Conversation', new mongoose.Schema({
+    userMessage : String,
+    botReply: String,
+    createdAt : {type : Date, default: Date.now}
+}))
+
 
 const limiter = rate_limit({
     windowMs: 60 * 1000,
@@ -158,6 +171,7 @@ app.post('/mesaj', async (req, res) => {
             role: 'assistant',
             content: reply
         })
+        await Conversation.create({ userMessage: customer_message, botReply: reply})
         res.send(reply)
 
     } catch (error) {

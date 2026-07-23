@@ -28,7 +28,7 @@ async function sendMessage() {
 function addMessage(text, type) {
     const div = document.createElement('div');
     div.className = `message ${type}`;
-    div.textContent = text;
+    div.innerHTML = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:#4a9eff;">$1</a>');
     messages.appendChild(div);
     messages.scrollTop = messages.scrollHeight;
 }
